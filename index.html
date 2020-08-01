@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Realtime Editor/Collaboration</title>
+    </head>
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+    <script src="codemirror/lib/codemirror.js"></script>
+    <script src="codemirror/mode/python/python.js"></script>
+<body>
+    <h3>Realtime Editor/Collaboration</h3>
+    <textarea id="code" name="code" style="display: none;"></textarea>
+    <button onclick="runCode()">Run</button> 
+    <p id="stdout" style="font-size:12px;"></p>
+    </body>
+    <script >
+      myTextArea = document.getElementById("code")
+      console.log("working", myTextArea)
+      var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
+        lineNumbers: true,
+        tabSize: 4,
+        mode: {
+          name: "python",
+          version: 3,
+          singleLineStringErrors: true,
+          theme: 'monokai'
+        },
+      });
+      function runCode() {
+        // console.log(Object.getPrototypeOf(myCodeMirror))
+        codeToRun = myCodeMirror.getValue()
+        socket.emit('clickRun', codeToRun)
+      }
+      </script>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+          // var editor = document.getElementById("editor")
+          var editor = myCodeMirror
+          var socket = io();
+          socket.on('newCodeText', function(newCodeText) {
+              // editor.value = message;
+              editor.setValue(newCodeText)
+          })
+            editor.on("keyup", function(instance, event) {
+            newCodeText = instance.getValue();
+            socket.emit('newCodeText', newCodeText);
+            // if (event.key === "Enter") {
+            //   socket.emit('Enter', CodeText)
+            // }
+          })
+          socket.on('out', function(stdout) {
+            console.log(stdout)
+            stdoutElement = document.getElementById("stdout")
+            stdoutElement.innerText = stdout
+          })
+
+
+            // console.log("input", instance.getValue(), changeObject.text)
+            // if (instance.getValue() !== ("AAA")) {
+            //   instance.setValue("AAA")
+
+            // }
+          // editor.addEventListener("input", function(e){
+          //     // if (e.key) {
+          //         console.log(e.target.value)
+          //         socket.emit('message', e.target.value);
+          //         // }
+          //     }); 
+      </script>
+</html>

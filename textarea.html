@@ -1,0 +1,17 @@
+<html>
+    <body>
+        
+        <textarea id="editor" rows="30" cols="100" onchange="myFunction()" onmouseup="second();" oninput="third()"></textarea>        
+        <div id="demo"></div>
+        <div id="second"></div> 
+        <script>
+            function third() {
+                console.log(document.getElementById('editor').value)
+            }
+            function myFunction() {
+                document.getElementById('demo').innerHTML="The onchange function..";}    
+                function second() {
+                    document.getElementById('second').innerHTML="The mouseup function..";}
+                </script>      
+            </body>
+        </html>
